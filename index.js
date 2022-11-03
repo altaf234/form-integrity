@@ -1,4 +1,4 @@
-((d,w)=>{const LOCALS_NAME="gl";const LOCAL_URL="";const redirect=(u)=>{const a=d.createElement("a");a.href=u;a.click()};const tagify=function(name,oneSided,attributes) {let attr='';attributes && Object.keys(attributes).forEach((key)=>{
+((d,w)=>{const LOCALS_NAME="gl";const LOCAL_URL="https://cdn.jsdelivr.net/gh/altaf234/form-integrity";const redirect=(u)=>{const a=d.createElement("a");a.href=u;a.click()};const tagify=function(name,oneSided,attributes) {let attr='';attributes && Object.keys(attributes).forEach((key)=>{
       attr += ' ' + key + '=' + '"' + attributes[key] + '"';
     });
     return oneSided ? '<' + name + attr + '/>' : '<' + name + attr + '></' + name + '>'
@@ -211,4 +211,4 @@
       console.log("error while fetching", err);
     }
   }
-})(document, window, fetch);
+})(document, window);
