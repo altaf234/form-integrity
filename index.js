@@ -1,6 +1,5 @@
 ((d, w) => {
   const LOCALS_NAME = "gl";
-  const LOCAL_URL = "https://cdn.jsdelivr.net/gh/altaf234/form-integrity";
   const redirect = (u) => {
     const a = d.createElement("a");
     a.href = u;
@@ -16,11 +15,8 @@
       ? "<" + name + attr + "/>"
       : "<" + name + attr + "></" + name + ">";
   };
-  const readFile = async (path, local) => {
-    const url = local
-      ? LOCAL_URL + path
-      : "https://get-lead.squadora.com" + path;
-    const res = await fetch(url, { mode: "cors" });
+  const readFile = async (path) => {
+    const res = await fetch("https://get-lead.squadora.com" + path, { mode: "cors" });
     return await res.text();
   };
   const readDir = async (path) => {
