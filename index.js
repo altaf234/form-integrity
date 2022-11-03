@@ -1,17 +1,34 @@
-((d,w)=>{const LOCALS_NAME="gl";const LOCAL_URL="https://cdn.jsdelivr.net/gh/altaf234/form-integrity";const redirect=(u)=>{const a=d.createElement("a");a.href=u;a.click()};const tagify=function(name,oneSided,attributes) {let attr='';attributes && Object.keys(attributes).forEach((key)=>{
-      attr += ' ' + key + '=' + '"' + attributes[key] + '"';
-    });
-    return oneSided ? '<' + name + attr + '/>' : '<' + name + attr + '></' + name + '>'
-  }
-  const readFile = async(path, local) => {
-    const url = local ? LOCAL_URL + path : "https://get-lead.squadora.com" + path;
+((d, w) => {
+  const LOCALS_NAME = "gl";
+  const LOCAL_URL = "https://cdn.jsdelivr.net/gh/altaf234/form-integrity";
+  const redirect = (u) => {
+    const a = d.createElement("a");
+    a.href = u;
+    a.click();
+  };
+  const tagify = function (name, oneSided, attributes) {
+    let attr = "";
+    attributes &&
+      Object.keys(attributes).forEach((key) => {
+        attr += " " + key + "=" + '"' + attributes[key] + '"';
+      });
+    return oneSided
+      ? "<" + name + attr + "/>"
+      : "<" + name + attr + "></" + name + ">";
+  };
+  const readFile = async (path, local) => {
+    const url = local
+      ? LOCAL_URL + path
+      : "https://get-lead.squadora.com" + path;
     const res = await fetch(url, { mode: "cors" });
     return await res.text();
-  }
-  const readDir = async(path) => {
-    const res = await fetch("https://get-lead.squadora.com" + path, { mode: "cors" });
+  };
+  const readDir = async (path) => {
+    const res = await fetch("https://get-lead.squadora.com" + path, {
+      mode: "cors",
+    });
     return (await res.json()).files;
-  }
+  };
   const defineElements = async () => {
     const files = await readDir("/jsx");
     for (let i = 0; i < files.length; i++) {
@@ -103,33 +120,36 @@
     }
   };
 
-  const addLink=(href)=> {
-    const s=d.createElement("link");
+  const addLink = (href) => {
+    const s = d.createElement("link");
     s.setAttribute("href", href);
     s.setAttribute("rel", "stylesheet");
     d.head.appendChild(s);
-  }
+  };
 
-  const addStyle=(css)=> {
-    const s=d.createElement("style");
+  const addStyle = (css) => {
+    const s = d.createElement("style");
     s.innerHTML = css;
     d.head.appendChild(s);
-  }
-  const addScript = (src)=> {
-    const s=d.createElement("script");
-    s.src=src;
+  };
+  const addScript = (src) => {
+    const s = d.createElement("script");
+    s.src = src;
     d.head.appendChild(s);
-  }
+  };
 
   w.initLead = async ({ id, oId }) => {
     try {
       const res = await fetch(
-        "https://get-lead.squadora.com/integrate/" + oId + "/" + id, {
-          mode: "cors"
+        "https://get-lead.squadora.com/integrate/" + oId + "/" + id,
+        {
+          mode: "cors",
         }
       );
       if (res.status == 200) {
-        addLink("https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css");
+        addLink(
+          "https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+        );
         addStyle(`
         .card {
           position: absolute;
@@ -144,11 +164,11 @@
         }
         .card button {
           width: min-content;
-        }`)
+        }`);
         await defineElements();
-      };
+      }
       const j = await res.json();
-      j.message  && alert(j.message);
+      j.message && alert(j.message);
       j.redirect && redirect(j.redirect);
       const card = d.createElement("div");
       card.classList.add("card");
@@ -158,57 +178,65 @@
       const des = d.createElement("p");
       des.innerHTML = j.des || "";
       card.appendChild(des);
-      j.elements && j.elements.forEach(element => {
-        card.innerHTML += tagify(element.src, false, {
-          title: element.title,
-          type: element.type,
-          elements: JSON.stringify(element.elements || []).replace(/"/g, "'"),
-          required: element.required
+      j.elements &&
+        j.elements.forEach((element) => {
+          card.innerHTML += tagify(element.src, false, {
+            title: element.title,
+            type: element.type,
+            elements: JSON.stringify(element.elements || []).replace(/"/g, "'"),
+            required: element.required,
+          });
         });
-      });
-      j.callToAction && (card.innerHTML += `<button class="btn btn-primary rounded-0" onclick="const data={};const children=this.parentElement.children;for(let i=0;i<children.length;i++){const child=children[i];if(child.tagName.split('-')[0]!='GL')continue;data[child.getAttribute('title').toLowerCase()]=child.value}submitForm(data, '${id}');">` + j.callToAction + "</button>");
+      j.callToAction &&
+        (card.innerHTML +=
+          `<button class="btn btn-primary rounded-0" onclick="const data={};const children=this.parentElement.children;for(let i=0;i<children.length;i++){const child=children[i];if(child.tagName.split('-')[0]!='GL')continue;data[child.getAttribute('title').toLowerCase()]=child.value}submitForm(data, '${id}');">` +
+          j.callToAction +
+          "</button>");
       document.body.appendChild(card);
-      addScript("https://checkout.razorpay.com/v1/checkout.js")
+      addScript("https://checkout.razorpay.com/v1/checkout.js");
     } catch (err) {
       console.log("Error while fetching", err);
     }
   };
-  w.submitForm=async(d,id)=>{
+  w.submitForm = async (d, id) => {
     try {
-      const res = await fetch("https://get-lead.squadora.com/form/" + id + "/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(d)
-      });
+      const res = await fetch(
+        "https://get-lead.squadora.com/form/" + id + "/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(d),
+        }
+      );
       const j = await res.json();
       j.message && alert(j.message);
       j.redirect && redirect(j.redirect);
       if (j.orderId) {
         var options = {
-        key: j.key_id, // Enter the Key ID generated from the Dashboard
-        amount: j.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-        currency: "INR",
-        name: "Squadora",
-        description: "sfsef",
-        image: "https://www.squadora.com/img/logo.webp",
-        order_id: j.orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-        handler: function (response) {
-          redirect("/")
-        },
-        theme: {
-          color: "blue",
-        },
-      };
-      var rzp1 = new Razorpay(options);
-      rzp1.on("payment.failed", function (response) {
-        alert("payment failed");
-      });
-      rzp1.open();
+          key: j.key_id, // Enter the Key ID generated from the Dashboard
+          amount: j.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          name: "Squadora",
+          description: "sfsef",
+          image: "https://www.squadora.com/img/logo.webp",
+          order_id: j.orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          handler: function (response) {
+            redirect("/");
+          },
+          theme: {
+            color: "blue",
+          },
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on("payment.failed", function (response) {
+          alert("payment failed");
+        });
+        rzp1.open();
       }
     } catch (err) {
       console.log("error while fetching", err);
     }
-  }
+  };
 })(document, window);
