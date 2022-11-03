@@ -1,2 +1,2 @@
 # form-integrity
- ingrate getlead forms
+ integrate getlead forms
